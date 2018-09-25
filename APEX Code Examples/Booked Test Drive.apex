@@ -15,7 +15,7 @@ public class ISEvent {
     public static void postEvent(String eventURI, String customerKey, String customerKeyName) {
         Http http = new Http();
         HttpRequest request = new HttpRequest();
-        request.setEndpoint('https://na5.thunderhead.com/one/rt/track/ONE-7NYETPGV75-5344/events');
+        request.setEndpoint('https://na5.thunderhead.com/one/rt/track/ONE-XXXXXXXX-XXX/events');
         request.setMethod('POST');
         request.setHeader('Content-Type', 'application/json');
         request.setBody('{"uri":"' + eventURI + '", "customerKey":"' + customerKey + '", "customerKeyName": "' + customerKeyName + '"}');
