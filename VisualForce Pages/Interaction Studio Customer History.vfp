@@ -1,0 +1,362 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="false" standardController="Contact">
+
+    <thunderhead:one_sdk customerKeyName="sfdccontactkey" customerKey="{!Contact.email}" />
+
+    <!-- START: OPTIONAL add-ons for this view -->
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    </link>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    </link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+
+    <!-- EXAMPLE: Using Angular plugins -->
+    <!-- @see http://ngmodules.org/ -->
+    <!-- @see https://github.com/urish/angular-moment -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.min.js"></script>
+    <script>
+        // Push custom dependency to the application for use in the template.
+        // @see am-time-ago below
+        angular.module('ONE-CRM').requires.push('angularMoment');
+        angular.module('ONE-CRM').requires.push('myApp');
+        angular.module('myApp', [])
+            .controller('AppCtrl', function ($scope) {
+                $scope.checkTouchpoint = function (name, tp) {
+                    return window.channel[name].some(function (ele) {
+                        return ele === tp;
+                    });
+                }
+                $scope.onTableFinish = function () {
+                    setTimeout(function () {
+                        processActivityHistory();
+                        addFilterChannelButtons();
+                    },200);
+                }
+            });
+    </script>
+    <style>
+        @font-face{font-family:"Glyphicons ONE";src:url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/one-icons.ttf) format('truetype'),url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/one-icons.woff) format('woff'),url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/one-icons.svg#one-icons) format('svg');font-weight:400;font-style:normal}@font-face{font-family:'Glyphicons Halflings';src:url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/glyphicons-halflings-regular.eot);src:url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'),url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/glyphicons-halflings-regular.woff2) format('woff2'),url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/glyphicons-halflings-regular.woff) format('woff'),url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/glyphicons-halflings-regular.ttf) format('truetype'),url(https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/assets/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format('svg')}.glyphicon{position:relative;top:1px;display:inline-block;font-family:'Glyphicons Halflings';font-style:normal;font-weight:400;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.glyphicon-asterisk:before{content:"\002a"}.glyphicon-plus:before{content:"\002b"}.glyphicon-eur:before,.glyphicon-euro:before{content:"\20ac"}.glyphicon-minus:before{content:"\2212"}.glyphicon-cloud:before{content:"\2601"}.glyphicon-envelope:before{content:"\2709"}.glyphicon-pencil:before{content:"\270f"}.glyphicon-glass:before{content:"\e001"}.glyphicon-music:before{content:"\e002"}.glyphicon-search:before{content:"\e003"}.glyphicon-heart:before{content:"\e005"}.glyphicon-star:before{content:"\e006"}.glyphicon-star-empty:before{content:"\e007"}.glyphicon-user:before{content:"\e008"}.glyphicon-film:before{content:"\e009"}.glyphicon-th-large:before{content:"\e010"}.glyphicon-th:before{content:"\e011"}.glyphicon-th-list:before{content:"\e012"}.glyphicon-ok:before{content:"\e013"}.glyphicon-remove:before{content:"\e014"}.glyphicon-zoom-in:before{content:"\e015"}.glyphicon-zoom-out:before{content:"\e016"}.glyphicon-off:before{content:"\e017"}.glyphicon-signal:before{content:"\e018"}.glyphicon-cog:before{content:"\e019"}.glyphicon-trash:before{content:"\e020"}.glyphicon-home:before{content:"\e021"}.glyphicon-file:before{content:"\e022"}.glyphicon-time:before{content:"\e023"}.glyphicon-road:before{content:"\e024"}.glyphicon-download-alt:before{content:"\e025"}.glyphicon-download:before{content:"\e026"}.glyphicon-upload:before{content:"\e027"}.glyphicon-inbox:before{content:"\e028"}.glyphicon-play-circle:before{content:"\e029"}.glyphicon-repeat:before{content:"\e030"}.glyphicon-refresh:before{content:"\e031"}.glyphicon-list-alt:before{content:"\e032"}.glyphicon-lock:before{content:"\e033"}.glyphicon-flag:before{content:"\e034"}.glyphicon-headphones:before{content:"\e035"}.glyphicon-volume-off:before{content:"\e036"}.glyphicon-volume-down:before{content:"\e037"}.glyphicon-volume-up:before{content:"\e038"}.glyphicon-qrcode:before{content:"\e039"}.glyphicon-barcode:before{content:"\e040"}.glyphicon-tag:before{content:"\e041"}.glyphicon-tags:before{content:"\e042"}.glyphicon-book:before{content:"\e043"}.glyphicon-bookmark:before{content:"\e044"}.glyphicon-print:before{content:"\e045"}.glyphicon-camera:before{content:"\e046"}.glyphicon-font:before{content:"\e047"}.glyphicon-bold:before{content:"\e048"}.glyphicon-italic:before{content:"\e049"}.glyphicon-text-height:before{content:"\e050"}.glyphicon-text-width:before{content:"\e051"}.glyphicon-align-left:before{content:"\e052"}.glyphicon-align-center:before{content:"\e053"}.glyphicon-align-right:before{content:"\e054"}.glyphicon-align-justify:before{content:"\e055"}.glyphicon-list:before{content:"\e056"}.glyphicon-indent-left:before{content:"\e057"}.glyphicon-indent-right:before{content:"\e058"}.glyphicon-facetime-video:before{content:"\e059"}.glyphicon-picture:before{content:"\e060"}.glyphicon-map-marker:before{content:"\e062"}.glyphicon-adjust:before{content:"\e063"}.glyphicon-tint:before{content:"\e064"}.glyphicon-edit:before{content:"\e065"}.glyphicon-share:before{content:"\e066"}.glyphicon-check:before{content:"\e067"}.glyphicon-move:before{content:"\e068"}.glyphicon-step-backward:before{content:"\e069"}.glyphicon-fast-backward:before{content:"\e070"}.glyphicon-backward:before{content:"\e071"}.glyphicon-play:before{content:"\e072"}.glyphicon-pause:before{content:"\e073"}.glyphicon-stop:before{content:"\e074"}.glyphicon-forward:before{content:"\e075"}.glyphicon-fast-forward:before{content:"\e076"}.glyphicon-step-forward:before{content:"\e077"}.glyphicon-eject:before{content:"\e078"}.glyphicon-chevron-left:before{content:"\e079"}.glyphicon-chevron-right:before{content:"\e080"}.glyphicon-plus-sign:before{content:"\e081"}.glyphicon-minus-sign:before{content:"\e082"}.glyphicon-remove-sign:before{content:"\e083"}.glyphicon-ok-sign:before{content:"\e084"}.glyphicon-question-sign:before{content:"\e085"}.glyphicon-info-sign:before{content:"\e086"}.glyphicon-screenshot:before{content:"\e087"}.glyphicon-remove-circle:before{content:"\e088"}.glyphicon-ok-circle:before{content:"\e089"}.glyphicon-ban-circle:before{content:"\e090"}.glyphicon-arrow-left:before{content:"\e091"}.glyphicon-arrow-right:before{content:"\e092"}.glyphicon-arrow-up:before{content:"\e093"}.glyphicon-arrow-down:before{content:"\e094"}.glyphicon-share-alt:before{content:"\e095"}.glyphicon-resize-full:before{content:"\e096"}.glyphicon-resize-small:before{content:"\e097"}.glyphicon-exclamation-sign:before{content:"\e101"}.glyphicon-gift:before{content:"\e102"}.glyphicon-leaf:before{content:"\e103"}.glyphicon-fire:before{content:"\e104"}.glyphicon-eye-open:before{content:"\e105"}.glyphicon-eye-close:before{content:"\e106"}.glyphicon-warning-sign:before{content:"\e107"}.glyphicon-plane:before{content:"\e108"}.glyphicon-calendar:before{content:"\e109"}.glyphicon-random:before{content:"\e110"}.glyphicon-comment:before{content:"\e111"}.glyphicon-magnet:before{content:"\e112"}.glyphicon-chevron-up:before{content:"\e113"}.glyphicon-chevron-down:before{content:"\e114"}.glyphicon-retweet:before{content:"\e115"}.glyphicon-shopping-cart:before{content:"\e116"}.glyphicon-folder-close:before{content:"\e117"}.glyphicon-folder-open:before{content:"\e118"}.glyphicon-resize-vertical:before{content:"\e119"}.glyphicon-resize-horizontal:before{content:"\e120"}.glyphicon-hdd:before{content:"\e121"}.glyphicon-bullhorn:before{content:"\e122"}.glyphicon-bell:before{content:"\e123"}.glyphicon-certificate:before{content:"\e124"}.glyphicon-thumbs-up:before{content:"\e125"}.glyphicon-thumbs-down:before{content:"\e126"}.glyphicon-hand-right:before{content:"\e127"}.glyphicon-hand-left:before{content:"\e128"}.glyphicon-hand-up:before{content:"\e129"}.glyphicon-hand-down:before{content:"\e130"}.glyphicon-circle-arrow-right:before{content:"\e131"}.glyphicon-circle-arrow-left:before{content:"\e132"}.glyphicon-circle-arrow-up:before{content:"\e133"}.glyphicon-circle-arrow-down:before{content:"\e134"}.glyphicon-globe:before{content:"\e135"}.glyphicon-wrench:before{content:"\e136"}.glyphicon-tasks:before{content:"\e137"}.glyphicon-filter:before{content:"\e138"}.glyphicon-briefcase:before{content:"\e139"}.glyphicon-fullscreen:before{content:"\e140"}.glyphicon-dashboard:before{content:"\e141"}.glyphicon-paperclip:before{content:"\e142"}.glyphicon-heart-empty:before{content:"\e143"}.glyphicon-link:before{content:"\e144"}.glyphicon-phone:before{content:"\e145"}.glyphicon-pushpin:before{content:"\e146"}.glyphicon-usd:before{content:"\e148"}.glyphicon-gbp:before{content:"\e149"}.glyphicon-sort:before{content:"\e150"}.glyphicon-sort-by-alphabet:before{content:"\e151"}.glyphicon-sort-by-alphabet-alt:before{content:"\e152"}.glyphicon-sort-by-order:before{content:"\e153"}.glyphicon-sort-by-order-alt:before{content:"\e154"}.glyphicon-sort-by-attributes:before{content:"\e155"}.glyphicon-sort-by-attributes-alt:before{content:"\e156"}.glyphicon-unchecked:before{content:"\e157"}.glyphicon-expand:before{content:"\e158"}.glyphicon-collapse-down:before{content:"\e159"}.glyphicon-collapse-up:before{content:"\e160"}.glyphicon-log-in:before{content:"\e161"}.glyphicon-flash:before{content:"\e162"}.glyphicon-log-out:before{content:"\e163"}.glyphicon-new-window:before{content:"\e164"}.glyphicon-record:before{content:"\e165"}.glyphicon-save:before{content:"\e166"}.glyphicon-open:before{content:"\e167"}.glyphicon-saved:before{content:"\e168"}.glyphicon-import:before{content:"\e169"}.glyphicon-export:before{content:"\e170"}.glyphicon-send:before{content:"\e171"}.glyphicon-floppy-disk:before{content:"\e172"}.glyphicon-floppy-saved:before{content:"\e173"}.glyphicon-floppy-remove:before{content:"\e174"}.glyphicon-floppy-save:before{content:"\e175"}.glyphicon-floppy-open:before{content:"\e176"}.glyphicon-credit-card:before{content:"\e177"}.glyphicon-transfer:before{content:"\e178"}.glyphicon-cutlery:before{content:"\e179"}.glyphicon-header:before{content:"\e180"}.glyphicon-compressed:before{content:"\e181"}.glyphicon-earphone:before{content:"\e182"}.glyphicon-phone-alt:before{content:"\e183"}.glyphicon-tower:before{content:"\e184"}.glyphicon-stats:before{content:"\e185"}.glyphicon-sd-video:before{content:"\e186"}.glyphicon-hd-video:before{content:"\e187"}.glyphicon-subtitles:before{content:"\e188"}.glyphicon-sound-stereo:before{content:"\e189"}.glyphicon-sound-dolby:before{content:"\e190"}.glyphicon-sound-5-1:before{content:"\e191"}.glyphicon-sound-6-1:before{content:"\e192"}.glyphicon-sound-7-1:before{content:"\e193"}.glyphicon-copyright-mark:before{content:"\e194"}.glyphicon-registration-mark:before{content:"\e195"}.glyphicon-cloud-download:before{content:"\e197"}.glyphicon-cloud-upload:before{content:"\e198"}.glyphicon-tree-conifer:before{content:"\e199"}.glyphicon-tree-deciduous:before{content:"\e200"}.glyphicon-cd:before{content:"\e201"}.glyphicon-save-file:before{content:"\e202"}.glyphicon-open-file:before{content:"\e203"}.glyphicon-level-up:before{content:"\e204"}.glyphicon-copy:before{content:"\e205"}.glyphicon-paste:before{content:"\e206"}.glyphicon-alert:before{content:"\e209"}.glyphicon-equalizer:before{content:"\e210"}.glyphicon-king:before{content:"\e211"}.glyphicon-queen:before{content:"\e212"}.glyphicon-pawn:before{content:"\e213"}.glyphicon-bishop:before{content:"\e214"}.glyphicon-knight:before{content:"\e215"}.glyphicon-baby-formula:before{content:"\e216"}.glyphicon-tent:before{content:"\26fa"}.glyphicon-blackboard:before{content:"\e218"}.glyphicon-bed:before{content:"\e219"}.glyphicon-apple:before{content:"\f8ff"}.glyphicon-erase:before{content:"\e221"}.glyphicon-hourglass:before{content:"\231b"}.glyphicon-lamp:before{content:"\e223"}.glyphicon-duplicate:before{content:"\e224"}.glyphicon-piggy-bank:before{content:"\e225"}.glyphicon-scissors:before{content:"\e226"}.glyphicon-bitcoin:before,.glyphicon-btc:before,.glyphicon-xbt:before{content:"\e227"}.glyphicon-jpy:before,.glyphicon-yen:before{content:"\00a5"}.glyphicon-rub:before,.glyphicon-ruble:before{content:"\20bd"}.glyphicon-scale:before{content:"\e230"}.glyphicon-ice-lolly:before{content:"\e231"}.glyphicon-ice-lolly-tasted:before{content:"\e232"}.glyphicon-education:before{content:"\e233"}.glyphicon-option-horizontal:before{content:"\e234"}.glyphicon-option-vertical:before{content:"\e235"}.glyphicon-menu-hamburger:before{content:"\e236"}.glyphicon-modal-window:before{content:"\e237"}.glyphicon-oil:before{content:"\e238"}.glyphicon-grain:before{content:"\e239"}.glyphicon-sunglasses:before{content:"\e240"}.glyphicon-text-size:before{content:"\e241"}.glyphicon-text-color:before{content:"\e242"}.glyphicon-text-background:before{content:"\e243"}.glyphicon-object-align-top:before{content:"\e244"}.glyphicon-object-align-bottom:before{content:"\e245"}.glyphicon-object-align-horizontal:before{content:"\e246"}.glyphicon-object-align-left:before{content:"\e247"}.glyphicon-object-align-vertical:before{content:"\e248"}.glyphicon-object-align-right:before{content:"\e249"}.glyphicon-triangle-right:before{content:"\e250"}.glyphicon-triangle-left:before{content:"\e251"}.glyphicon-triangle-bottom:before{content:"\e252"}.glyphicon-triangle-top:before{content:"\e253"}.glyphicon-console:before{content:"\e254"}.glyphicon-superscript:before{content:"\e255"}.glyphicon-subscript:before{content:"\e256"}.glyphicon-menu-left:before{content:"\e257"}.glyphicon-menu-right:before{content:"\e258"}.glyphicon-menu-down:before{content:"\e259"}.glyphicon-menu-up:before{content:"\e260"}.carousel-control .glyphicon-chevron-left,.carousel-control .glyphicon-chevron-right,.carousel-control .icon-next,.carousel-control .icon-prev{position:absolute;top:50%;margin-top:-10px;z-index:5;display:inline-block}.carousel-control .glyphicon-chevron-left,.carousel-control .icon-prev{left:50%;margin-left:-10px}.carousel-control .glyphicon-chevron-right,.carousel-control .icon-next{right:50%;margin-right:-10px}@media screen and (min-width:768px){.one-date-picker .glyphicon,.one-glyphicon,[class*=one-glyphicon-],[class^=one-glyphicon-]{text-transform:none;-moz-osx-font-smoothing:grayscale;min-width:1em;vertical-align:middle;speak:none}.one-date-picker .glyphicon:before,.one-glyphicon:before,[class*=one-glyphicon-]:before,[class^=one-glyphicon-]:before{padding:0 1px}.carousel-control .glyphicon-chevron-left,.carousel-control .glyphicon-chevron-right,.carousel-control .icon-next,.carousel-control .icon-prev{width:30px;height:30px;margin-top:-10px;font-size:30px}.carousel-control .glyphicon-chevron-left,.carousel-control .icon-prev{margin-left:-10px}.carousel-control .glyphicon-chevron-right,.carousel-control .icon-next{margin-right:-10px}.one-glyphicon,[class*=one-glyphicon-],[class^=one-glyphicon-]{font-family:"Glyphicons ONE"!important;font-style:normal;font-weight:400;font-variant:normal;line-height:inherit;-webkit-font-smoothing:antialiased;position:relative;top:0;display:inline-block;text-align:center}.one-glyphicon-xs{font-size:1.2rem!important}.one-glyphicon-sm{font-size:1.4rem!important}.one-glyphicon-md{font-size:1.6rem!important}.one-glyphicon-lg{font-size:2rem!important}.one-glyphicon-xl{font-size:2.4rem!important}.one-glyphicon-multiply:before{content:"\d7"}.one-glyphicon-capslock:before{content:"\21ea"}.one-glyphicon-checkmark:before{content:"\2713"}.one-glyphicon-italic:before{content:"\e000"}.one-glyphicon-split-content:before{content:"\e001"}.one-glyphicon-lock:before{content:"\e002"}.one-glyphicon-unlocked:before{content:"\e003"}.one-glyphicon-lock2:before{content:"\e004"}.one-glyphicon-paragraph-left:before{content:"\e006"}.one-glyphicon-paragraph-center:before{content:"\e007"}.one-glyphicon-paragraph-right:before{content:"\e008"}.one-glyphicon-paragraph-justify:before{content:"\e009"}.one-glyphicon-indent-increase:before{content:"\e00a"}.one-glyphicon-indent-decrease:before{content:"\e00b"}.one-glyphicon-cancel:before{content:"\e011"}.one-glyphicon-plus:before{content:"\e012"}.one-glyphicon-minus:before{content:"\e013"}.one-glyphicon-subtract:before{content:"\e014"}.one-glyphicon-add:before{content:"\e015"}.one-glyphicon-cloud:before{content:"\e016"}.one-glyphicon-warning:before{content:"\e017"}.one-glyphicon-star:before{content:"\e018"}.one-glyphicon-code:before{content:"\e01a"}.one-glyphicon-print:before{content:"\e01b"}.one-glyphicon-lock-fill:before{content:"\e01c"}.one-glyphicon-unlock-fill:before{content:"\e01d"}.one-glyphicon-paperclip:before{content:"\e01e"}.one-glyphicon-file-add:before{content:"\e01f"}.one-glyphicon-file-remove:before{content:"\e020"}.one-glyphicon-file2:before{content:"\e021"}.one-glyphicon-document-stroke:before{content:"\e022"}.one-glyphicon-calendar:before{content:"\e023"}.one-glyphicon-pilcrow:before{content:"\e024"}.one-glyphicon-undo:before{content:"\e025"}.one-glyphicon-save:before{content:"\e026"}.one-glyphicon-bold:before{content:"\e027"}.one-glyphicon-redo:before{content:"\e028"}.one-glyphicon-one-logo:before{content:"\e029"}.one-glyphicon-gallery:before{content:"\e02a"}.one-glyphicon-box:before{content:"\e02b"}.one-glyphicon-insert-code:before{content:"\e02c"}.one-glyphicon-drawer:before{content:"\e02d"}.one-glyphicon-layers3:before{content:"\e02e"}.one-glyphicon-bars:before{content:"\e02f"}.one-glyphicon-chart-alt:before{content:"\e030"}.one-glyphicon-page-break:before{content:"\e034"}.one-glyphicon-page-numbering:before{content:"\e035"}.one-glyphicon-inline-if:before{content:"\e036"}.one-glyphicon-docusign:before{content:"\e037"}.one-glyphicon-link:before{content:"\e038"}.one-glyphicon-spelling:before{content:"\e039"}.one-glyphicon-preview:before{content:"\e03a"}.one-glyphicon-insert-image:before{content:"\e03b"}.one-glyphicon-data-items:before{content:"\e03c"}.one-glyphicon-home2:before{content:"\e03d"}.one-glyphicon-o-list:before{content:"\e03e"}.one-glyphicon-u-list:before{content:"\e03f"}.one-glyphicon-post3:before{content:"\e040"}.one-glyphicon-underline:before{content:"\e041"}.one-glyphicon-time:before{content:"\e042"}.one-glyphicon-list:before{content:"\e043"}.one-glyphicon-menu:before{content:"\e044"}.one-glyphicon-grid-alt:before{content:"\e045"}.one-glyphicon-grid:before{content:"\e046"}.one-glyphicon-googleplus:before{content:"\e047"}.one-glyphicon-delicious:before{content:"\e048"}.one-glyphicon-close:before{content:"\e049"}.one-glyphicon-download3:before{content:"\e04c"}.one-glyphicon-upload3:before{content:"\e04d"}.one-glyphicon-menu2:before{content:"\e04e"}.one-glyphicon-expand:before{content:"\e04f"}.one-glyphicon-contract:before{content:"\e050"}.one-glyphicon-insert:before{content:"\e051"}.one-glyphicon-binoculars:before{content:"\e052"}.one-glyphicon-chrome:before{content:"\e053"}.one-glyphicon-firefox:before{content:"\e054"}.one-glyphicon-IE:before{content:"\e055"}.one-glyphicon-safari:before{content:"\e056"}.one-glyphicon-css3:before{content:"\e057"}.one-glyphicon-html5:before{content:"\e058"}.one-glyphicon-windows8:before{content:"\e059"}.one-glyphicon-android:before{content:"\e05a"}.one-glyphicon-apple:before{content:"\e05b"}.one-glyphicon-tux:before{content:"\e05c"}.one-glyphicon-windows2:before{content:"\e05d"}.one-glyphicon-table-column:before{content:"\e05e"}.one-glyphicon-table-cell:before{content:"\e05f"}.one-glyphicon-table-row:before{content:"\e060"}.one-glyphicon-table-table:before{content:"\e061"}.one-glyphicon-layout:before{content:"\e062"}.one-glyphicon-project:before{content:"\e063"}.one-glyphicon-background:before{content:"\e064"}.one-glyphicon-expand2:before{content:"\e065"}.one-glyphicon-contract2:before{content:"\e066"}.one-glyphicon-quotes-left:before{content:"\e067"}.one-glyphicon-bars2:before{content:"\e068"}.one-glyphicon-stats:before{content:"\e069"}.one-glyphicon-share:before{content:"\e06a"}.one-glyphicon-cursor:before{content:"\e06b"}.one-glyphicon-asset-outline:before{content:"\e600"}.one-glyphicon-action-outline:before{content:"\e601"}.one-glyphicon-spaces:before{content:"\e602"}.one-glyphicon-dashboard:before{content:"\e603"}.one-glyphicon-tool-outline:before{content:"\e604"}.one-glyphicon-proposition-outline:before{content:"\e605"}.one-glyphicon-touchpoint-outline:before{content:"\e606"}.one-glyphicon-analytic-outline:before{content:"\e607"}.one-glyphicon-release-outline:before{content:"\e608"}.one-glyphicon-rule-outline:before{content:"\e609"}.one-glyphicon-assisted:before{content:"\e60a"}.one-glyphicon-mobile:before{content:"\e60b"}.one-glyphicon-laptop:before{content:"\e60c"}.one-glyphicon-more:before{content:"\e60d"}.one-glyphicon-help-outline:before{content:"\e60e"}.one-glyphicon-flag:before{content:"\e60f"}.one-glyphicon-physical:before{content:"\e610"}.one-glyphicon-social:before{content:"\e611"}.one-glyphicon-list-contract:before{content:"\e612"}.one-glyphicon-list-expand:before{content:"\e613"}.one-glyphicon-diamond:before{content:"\e614"}.one-glyphicon-help:before{content:"\e615"}.one-glyphicon-info:before{content:"\e616"}.one-glyphicon-promotion:before{content:"\e617"}.one-glyphicon-verified-customer:before{content:"\e618"}.one-glyphicon-recognized-customer:before{content:"\e619"}.one-glyphicon-default-customer:before{content:"\e61a"}.one-glyphicon-proposition-block:before{content:"\e61b"}.one-glyphicon-action-block:before{content:"\e61c"}.one-glyphicon-webpage:before{content:"\e61d"}.one-glyphicon-paginate-previous-pg:before{content:"\e61e"}.one-glyphicon-paginate-next-pg:before{content:"\e61f"}.one-glyphicon-paginate-last-pg:before{content:"\e620"}.one-glyphicon-paginate-first-pg:before{content:"\e621"}.one-glyphicon-viewpoint:before{content:"\e622"}.one-glyphicon-weight-normalize:before{content:"\e623"}.one-glyphicon-weight-distribute-even:before{content:"\e624"}.one-glyphicon-weight-adjust-this:before{content:"\e625"}.one-glyphicon-weight-adjust-others:before{content:"\e626"}.one-glyphicon-codefile:before{content:"\e627"}.one-glyphicon-zip:before{content:"\e628"}.one-glyphicon-activity:before{content:"\e629"}.one-glyphicon-deviceinfo-block:before{content:"\e62a"}.one-glyphicon-visitormeta-block:before{content:"\e62b"}.one-glyphicon-interactioninfo-block:before{content:"\e62c"}.one-glyphicon-media-file:before{content:"\e62d"}.one-glyphicon-action:before{content:"\e62e"}.one-glyphicon-rule:before{content:"\e62f"}.one-glyphicon-expression:before{content:"\e630"}.one-glyphicon-function:before{content:"\e631"}.one-glyphicon-data-structure:before{content:"\e632"}.one-glyphicon-data-attributes:before{content:"\e633"}.one-glyphicon-key:before{content:"\e634"}.one-glyphicon-true-false:before{content:"\e635"}.one-glyphicon-type:before{content:"\e636"}.one-glyphicon-number:before{content:"\e637"}.one-glyphicon-snaplogic-block:before{content:"\e638"}.one-glyphicon-salesforce-block:before{content:"\e639"}.one-glyphicon-odata-block:before{content:"\e63a"}.one-glyphicon-xml-block:before{content:"\e63b"}.one-glyphicon-geolocation-block:before{content:"\e63c"}.one-glyphicon-webrequest-block:before{content:"\e63d"}.one-glyphicon-visitorhistory-block:before{content:"\e63e"}.one-glyphicon-api:before{content:"\e63f"}.one-glyphicon-launch:before{content:"\e640"}.one-glyphicon-history:before{content:"\e641"}.one-glyphicon-flask:before{content:"\e642"}.one-glyphicon-plus-sign2:before{content:"\e643"}.one-glyphicon-minus-sign-alt:before{content:"\e644"}.one-glyphicon-check-empty:before{content:"\e645"}.one-glyphicon-table:before{content:"\e646"}.one-glyphicon-circle-blank:before{content:"\e647"}.one-glyphicon-circle:before{content:"\e648"}.one-glyphicon-exclamation-sign:before{content:"\e649"}.one-glyphicon-copy:before{content:"\e64a"}.one-glyphicon-tasks:before{content:"\e64b"}.one-glyphicon-group:before{content:"\e64c"}.one-glyphicon-signout:before{content:"\e64d"}.one-glyphicon-globe:before{content:"\e64e"}.one-glyphicon-asterisk:before{content:"\e64f"}.one-glyphicon-map:before{content:"\e650"}.one-glyphicon-dependency:before{content:"\e651"}.one-glyphicon-touchpoint:before{content:"\e652"}.one-glyphicon-capture:before{content:"\e653"}.one-glyphicon-asset:before{content:"\e654"}.one-glyphicon-proposition:before{content:"\e655"}.one-glyphicon-sort:before{content:"\e656"}.one-glyphicon-aep-outline:before{content:"\e657"}.one-glyphicon-journey-outline:before{content:"\e658"}.one-glyphicon-activity-tracking:before{content:"\e659"}.one-glyphicon-aep-block:before{content:"\e65a"}.one-glyphicon-down:before{content:"\e65b"}.one-glyphicon-cloud-upload-outline:before{content:"\e65c"}.one-glyphicon-less-than-equal:before{content:"\e65d"}.one-glyphicon-greater-than-equal:before{content:"\e65e"}.one-glyphicon-less-than:before{content:"\e65f"}.one-glyphicon-greater-than:before{content:"\e660"}.one-glyphicon-not-equal:before{content:"\e661"}.one-glyphicon-equation:before{content:"\e662"}.one-glyphicon-horizontal-distribution:before{content:"\e663"}.one-glyphicon-void:before{content:"\e664"}.one-glyphicon-horizontal-align-center:before{content:"\e665"}.one-glyphicon-horizontal-align-right:before{content:"\e666"}.one-glyphicon-horizontal-align-left:before{content:"\e667"}.one-glyphicon-references:before{content:"\e668"}.one-glyphicon-chevron:before{content:"\e669"}.one-glyphicon-equal-height:before{content:"\e66a"}.one-glyphicon-equal-width:before{content:"\e66b"}.one-glyphicon-ruler:before{content:"\e66c"}.one-glyphicon-vertical-align-bottom:before{content:"\e66d"}.one-glyphicon-vertical-align-center:before{content:"\e66e"}.one-glyphicon-vertical-align-top:before{content:"\e66f"}.one-glyphicon-vertical-distribution:before{content:"\e670"}.one-glyphicon-push-action:before{content:"\e671"}.one-glyphicon-check-empty-alt:before{content:"\e672"}.one-glyphicon-preview-alt:before{content:"\e673"}.one-glyphicon-pull-data:before{content:"\e674"}.one-glyphicon-push-data:before{content:"\e675"}.one-glyphicon-insert-external-link:before{content:"\e676"}.one-glyphicon-uniE677:before{content:"\e677"}.one-glyphicon-webpage-element:before{content:"\e678"}.one-glyphicon-uri-parameter:before{content:"\e679"}.one-glyphicon-cookie:before{content:"\e67a"}.one-glyphicon-category-settings:before{content:"\e67b"}.one-glyphicon-docbox:before{content:"\e67c"}.one-glyphicon-add-data:before{content:"\e67d"}.one-glyphicon-monitor-me:before{content:"\e67e"}.one-glyphicon-monitor-other:before{content:"\e67f"}.one-glyphicon-generic-data-block:before{content:"\e680"}.one-glyphicon-uniE681:before{content:"\e681"}.one-glyphicon-inprogress:before{content:"\e683"}.one-glyphicon-flows:before{content:"\e900"}.one-glyphicon-optimization:before{content:"\e901"}.one-glyphicon-sort-arrow:before{content:"\e910"}.one-glyphicon-wildcard:before{content:"\e903"}.one-glyphicon-new-window:before{content:"\e904"}.one-glyphicon-page:before{content:"\e905"}.one-glyphicon-categories:before{content:"\e906"}.one-glyphicon-viking:before{content:"\e907"}.one-glyphicon-merge:before{content:"\e908"}.one-glyphicon-modified:before{content:"\e909"}.one-glyphicon-unpublished:before{content:"\e90a"}.one-glyphicon-published:before{content:"\e90b"}.one-glyphicon-audience:before{content:"\e90c"}.one-glyphicon-moon:before{content:"\e90d"}.one-glyphicon-sun:before{content:"\e90e"}.one-glyphicon-switch:before{content:"\e90f"}.one-glyphicon-triangle:before{content:"\f000"}.one-glyphicon-search:before{content:"\f002"}.one-glyphicon-user:before{content:"\f007"}.one-glyphicon-cog:before{content:"\f013"}.one-glyphicon-reliability:before{content:"\f016"}.one-glyphicon-windows:before{content:"\f019"}.one-glyphicon-email:before{content:"\f028"}.one-glyphicon-filter:before{content:"\f05c"}.one-glyphicon-sc:before{content:"\f08d"}.one-glyphicon-images:before{content:"\f09f"}.one-glyphicon-network:before{content:"\f0a6"}.one-glyphicon-algorhythm:before{content:"\f0b8"}.one-glyphicon-createfile:before{content:"\f0c6"}.one-glyphicon-sign-blank:before{content:"\f0c8"}.one-glyphicon-copy2:before{content:"\f0c9"}.one-glyphicon-cut:before{content:"\f0ca"}.one-glyphicon-paste:before{content:"\f0cb"}.one-glyphicon-trash:before{content:"\f0ce"}.one-glyphicon-trashempty:before{content:"\f0cf"}.one-glyphicon-trashfull:before{content:"\f0d0"}.one-glyphicon-file:before{content:"\f0d6"}.one-glyphicon-sidebar:before{content:"\f124"}.one-glyphicon-post:before{content:"\f12e"}.one-glyphicon-post2:before{content:"\f130"}.one-glyphicon-twocolumnright:before{content:"\f1a7"}.one-glyphicon-twocolumnleft:before{content:"\f1a9"}.one-glyphicon-font:before{content:"\f1ae"}.one-glyphicon-edit:before{content:"\f1b7"}.one-glyphicon-palette:before{content:"\f1b9"}.one-glyphicon-layers:before{content:"\f1ca"}.one-glyphicon-layers2:before{content:"\f1cb"}.one-glyphicon-paintbrush:before{content:"\f1e8"}.one-glyphicon-indentleft:before{content:"\f1f2"}.one-glyphicon-indentright:before{content:"\f1f3"}.one-glyphicon-paintroll:before{content:"\f1fa"}.one-glyphicon-addshape:before{content:"\f1fd"}.one-glyphicon-subtractshape:before{content:"\f1fe"}.one-glyphicon-intersectshape:before{content:"\f1ff"}.one-glyphicon-excludeshape:before{content:"\f200"}.one-glyphicon-timeline:before{content:"\f253"}.one-glyphicon-plaque:before{content:"\f2b8"}.one-glyphicon-psbuttoncircle:before{content:"\f2bb"}.one-glyphicon-psbuttonsquare:before{content:"\f2bc"}.one-glyphicon-downleft:before{content:"\f2ff"}.one-glyphicon-downright:before{content:"\f300"}.one-glyphicon-up:before{content:"\f301"}.one-glyphicon-upleft:before{content:"\f302"}.one-glyphicon-upright:before{content:"\f303"}.one-glyphicon-right:before{content:"\f304"}.one-glyphicon-left:before{content:"\f305"}.one-glyphicon-equals:before{content:"\f30c"}.one-glyphicon-back:before{content:"\f31e"}.one-glyphicon-forward:before{content:"\f31f"}.one-glyphicon-zoomin:before{content:"\f320"}.one-glyphicon-zoomout:before{content:"\f321"}.one-glyphicon-pagesetup:before{content:"\f331"}.one-glyphicon-addfriend:before{content:"\f3da"}.one-glyphicon-removefriend:before{content:"\f3db"}.one-glyphicon-delete:before{content:"\f470"}.one-glyphicon-confirm:before{content:"\f471"}.one-glyphicon-left-circle:before{content:"\f472"}.one-glyphicon-right-circle:before{content:"\f473"}.one-glyphicon-up-circle:before{content:"\f474"}.one-glyphicon-down-circle:before{content:"\f475"}.one-glyphicon-add-circle:before{content:"\f476"}.one-glyphicon-subtract-circle:before{content:"\f477"}.one-glyphicon-delete-circle:before{content:"\f478"}.one-glyphicon-confirm-circle:before{content:"\f479"}.one-glyphicon-create:before{content:"\f47c"}.one-glyphicon-redo-alt:before{content:"\f47d"}.one-glyphicon-refresh:before{content:"\f486"}.one-glyphicon-right-arrow:before{content:"\f488"}.one-glyphicon-left-arrow:before{content:"\f489"}.one-glyphicon-up-arrow:before{content:"\f48a"}.one-glyphicon-down-arrow:before{content:"\f48b"}.checkbox input+.checkbox-gfx::before,.checkbox input+label::before,.radio input+.radio-gfx::before,.radio input+label::before{content:"";text-align:center;display:block;overflow:hidden;width:20px;height:20px;background:0 0;border:1px solid;position:absolute;left:0;top:0;-webkit-transition-property:background-color,border-color,color,-webkit-box-shadow;-webkit-box-sizing:border-box;-webkit-transition-timing-function:ease-out}.checkbox input+.checkbox-gfx::before,.checkbox input+label::before{font:12px "Glyphicons ONE";line-height:19px;box-sizing:border-box;transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,box-shadow;transition-property:background-color,border-color,color,box-shadow,-webkit-box-shadow;-webkit-transition-duration:.1s;transition-duration:.1s;transition-timing-function:ease-out;-webkit-transition-delay:0s;transition-delay:0s;-webkit-font-smoothing:antialiased}.radio input+.radio-gfx::before,.radio input+label::before{font:9px "Glyphicons ONE";line-height:19px;box-sizing:border-box;transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,box-shadow;transition-property:background-color,border-color,color,box-shadow,-webkit-box-shadow;-webkit-transition-duration:.1s;transition-duration:.1s;transition-timing-function:ease-out;-webkit-transition-delay:0s;transition-delay:0s;-webkit-font-smoothing:antialiased}.checkbox-light input+.checkbox-gfx::before,.checkbox-light input+label::before,.radio-light input+.radio-gfx::before,.radio-light input+label::before{-webkit-transition-property:background-color,border-color,color,-webkit-box-shadow;-webkit-transition-delay:0s;content:"";display:block;left:0;top:0;position:absolute;width:20px;text-align:center;overflow:hidden;height:20px;background:0 0;border:1px solid}.checkbox-light input+.checkbox-gfx::before,.checkbox-light input+label::before{font:12px "Glyphicons ONE";line-height:19px;-webkit-box-sizing:border-box;box-sizing:border-box;transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,box-shadow;transition-property:background-color,border-color,color,box-shadow,-webkit-box-shadow;-webkit-transition-duration:.1s;transition-duration:.1s;-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;transition-delay:0s;-webkit-font-smoothing:antialiased}.radio-light input+.radio-gfx::before,.radio-light input+label::before{font:9px "Glyphicons ONE";line-height:19px;-webkit-box-sizing:border-box;box-sizing:border-box;transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,box-shadow;transition-property:background-color,border-color,color,box-shadow,-webkit-box-shadow;-webkit-transition-duration:.1s;transition-duration:.1s;-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;transition-delay:0s;-webkit-font-smoothing:antialiased}.checkbox-dark input+.checkbox-gfx::before,.checkbox-dark input+label::before,.checkbox.dark input+.checkbox-gfx::before,.checkbox.dark input+label::before,.dark-ui .checkbox input+.checkbox-gfx::before,.dark-ui .checkbox input+label::before,.dark-ui-content .checkbox input+.checkbox-gfx::before,.dark-ui-content .checkbox input+label::before,.modal-system .checkbox input+.checkbox-gfx::before,.modal-system .checkbox input+label::before{content:"";font:12px "Glyphicons ONE";line-height:19px;text-align:center;display:block;overflow:hidden;-webkit-box-sizing:border-box;box-sizing:border-box;width:20px;height:20px;background:0 0;border:1px solid;position:absolute;left:0;top:0;-webkit-transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,box-shadow;transition-property:background-color,border-color,color,box-shadow,-webkit-box-shadow;-webkit-transition-duration:.1s;transition-duration:.1s;-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;-webkit-transition-delay:0s;transition-delay:0s;-webkit-font-smoothing:antialiased}.dark-ui .radio input+.radio-gfx::before,.dark-ui .radio input+label::before,.dark-ui-content .radio input+.radio-gfx::before,.dark-ui-content .radio input+label::before,.modal-system .radio input+.radio-gfx::before,.modal-system .radio input+label::before,.radio-dark input+.radio-gfx::before,.radio-dark input+label::before,.radio.dark input+.radio-gfx::before,.radio.dark input+label::before{content:"";font:9px "Glyphicons ONE";line-height:19px;text-align:center;display:block;overflow:hidden;-webkit-box-sizing:border-box;box-sizing:border-box;width:20px;height:20px;background:0 0;border:1px solid;position:absolute;left:0;top:0;-webkit-transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,box-shadow;transition-property:background-color,border-color,color,box-shadow,-webkit-box-shadow;-webkit-transition-duration:.1s;transition-duration:.1s;-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;-webkit-transition-delay:0s;transition-delay:0s;-webkit-font-smoothing:antialiased}.dropdown .dropdown-menu.dropdown-menu-icon li a span[class*=icon-],.dropdown .dropdown-menu.dropdown-menu-icon li a span[class*=one-glyphicon]{position:absolute;top:6px;left:10px}.one-select .select2-choice .one-glyphicon-xs,.one-select-drop .one-glyphicon-xs{margin:0 5px}.one-panel .one-panel-button [class^=one-glyphicon-]{margin-right:0}.one-date-picker .glyphicon{font-family:"Glyphicons ONE"!important;font-style:normal;font-weight:400;font-variant:normal;line-height:inherit;-webkit-font-smoothing:antialiased;position:relative;top:0;display:inline-block;text-align:center;margin-right:0!important}.one-date-picker .glyphicon-chevron-left:before{content:"\f489"}.one-date-picker .glyphicon-chevron-right:before{content:"\f488"}.one-date-picker .glyphicon-chevron-up:before{content:"\f48a"}.one-date-picker .glyphicon-chevron-down:before{content:"\f48b"}.one-list-selected .one-glyphicon{color:#b9c0c4;margin-right:5px}.help-icon-container .one-glyphicon-new-window,.help-icon-container .secondary-nav-help-text{color:#fff}.alert:before{position:absolute;left:10px;top:10px;font:18px "Glyphicons ONE";width:20px;height:20px;text-align:center;line-height:20px}one-entity-icon [class^=one-glyphicon-]{position:absolute;top:50%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}one-entity-icon .one-glyphicon-activity{margin-top:4px;font-size:4.4rem}one-entity-icon .one-glyphicon-data-attributes{margin-top:3px}one-entity-icon .one-glyphicon-asset,one-entity-icon .one-glyphicon-bars,one-entity-icon .one-glyphicon-group,one-entity-icon .one-glyphicon-push-action{font-size:3.6rem}.anx-export .anx-export-no-data-icon{font-size:50px;font-family:"Glyphicons ONE";color:#dadce1}.journeys-container .lifecycle-stage-label-container::after,.journeys-container .lifecycle-stage-label-container::before{color:#fff;font-family:"Glyphicons ONE";display:inline-block;width:24px;vertical-align:middle;cursor:pointer;text-align:center}.journeys-container .lifecycle-stage-label-container::before{content:'\f489';margin-right:-3px}.journeys-container .lifecycle-stage-label-container::after{content:'\f488';margin-left:-3px}.journeys-container .stats-panel .stat .one-glyphicon-recognized-customer{color:inherit}.journeys-container .stats-panel .stat .one-glyphicon-down,.journeys-container .stats-panel .stat .one-glyphicon-left{color:#7555b8}.journeys-container .stats-panel .stat .one-glyphicon-right{color:#009ca6}.journeys-time-period-comparison .one-glyphicon-new-window{margin-left:2px}.light-ui .anx-journeys-showing .one-split-button .checkbox input+.checkbox-gfx::before,.light-ui .anx-journeys-showing .one-split-button .checkbox input+label::before{content:"";font:12px "Glyphicons ONE";line-height:19px;text-align:center;display:block;overflow:hidden;-webkit-box-sizing:border-box;box-sizing:border-box;width:20px;height:20px;background:0 0;border:1px solid;position:absolute;left:0;top:0;-webkit-transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,-webkit-box-shadow;transition-property:background-color,border-color,color,box-shadow;transition-property:background-color,border-color,color,box-shadow,-webkit-box-shadow;-webkit-transition-duration:.1s;transition-duration:.1s;-webkit-transition-timing-function:ease-out;transition-timing-function:ease-out;-webkit-transition-delay:0s;transition-delay:0s;-webkit-font-smoothing:antialiased}.action-edit .edit-panel .main-controls-wrapper .main-controls .form-group .group-header .sub-group .sub-group-header .selection-summary .one-glyphicon-info{vertical-align:bottom;color:#c7202a}.action-create-type .selection-type .selection-type-icon.one-glyphicon-xl{font-size:5rem!important;line-height:1}.space-export-component-container .export-form .export-copy .non-export-item .one-glyphicon-void,.space-export-component-container .export-form .non-export-list .non-export-item .one-glyphicon-void{color:#c7202a}.space-edit-container .space-edit-form button .one-glyphicon,.space-edit-container .space-edit-form label .one-glyphicon{margin:0 0 0 5px}.space-edit-container .space-edit-form .one-glyphicon-xl{display:block;width:30px;font-size:30px!important;margin:0 auto}.space-edit-container .space-edit-form .one-glyphicon-xl.one-glyphicon-confirm{color:#a1da1a}.space-edit-container .space-edit-form .one-glyphicon-xl.one-glyphicon-delete{color:#cc363f}.input-mode .option .font-icon.one-glyphicon-number{top:4px;font-size:1.8rem!important}#profile-editor-breadcrumb .trail .crumb .one-glyphicon-right-arrow{font-size:.7em;padding:12px 0 12px 5px}#profile-editor-breadcrumb .trail .crumb.categories .one-glyphicon-right-arrow{padding:12px 0}.monitor-panel-tree .monitor-panel-tree-view .monitor-panel-tree-default .jstree-default .jstree-node .jstree-ocl,.monitor-panel-tree .monitor-panel-tree-view .monitor-panel-tree-default .jstree-default .jstree-node .monitor-panel-tree-item-no-children-icon{position:absolute;left:0;top:-1px;font-family:"Glyphicons ONE";font-size:7px;font-style:normal;font-weight:400;speak:none}.event-feed .event-feed-item .event-feed-item-body .event-entry .entry-wrapper .one-glyphicon-flag{color:#000;margin-left:7px}.event-feed .event-feed-item .event-feed-item-body .event-entry .one-glyphicon-sm{margin-right:3px}.event-feed .event-feed-item .event-feed-item-body .event-entry .one-glyphicon-sm.indent{margin-left:15px}.workspace-changes-container .one-glyphicon-file-add{color:#97d700}.workspace-changes-container .one-glyphicon-trash{color:#c7202a}.workspace-changes-container .one-glyphicon-refresh{color:#ffd100}.launchpad-container .one-glyphicon-file-add{color:#97d700}.launchpad-container .one-glyphicon-trash{color:#c7202a}.launchpad-container .one-glyphicon-refresh{color:#ffd100}.release-container .one-glyphicon-file-add{color:#97d700}.release-container .one-glyphicon-trash{color:#c7202a}.release-container .one-glyphicon-refresh{color:#ffd100}.structure-type-container .selection-type .selection-type-icon.one-glyphicon-xl{font-size:5rem!important;line-height:1}}
+    </style>
+    <!-- <link rel="stylesheet" href="https://eu2.thunderhead.com/one/app/v-20180807163145/compressed/theme-one.css"></link> -->
+    <style>
+        body {
+            font-size: 10px;
+        }
+
+        .filterCondition {
+            cursor: pointer;
+            border-radius: 4px;
+            display: inline;
+            padding: 10px;
+            margin: 4px;
+            background-color: #24a1e0;
+            color: white;
+        }
+
+        .search {
+            display: inline-grid;
+            padding: 10px;
+            margin: 4px;
+        }
+
+        #search {
+            height: 31px;
+            float:right;
+        }
+
+        #filterDivs {
+            width: 100%;
+            margin: 0 auto;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        #containerContainer {
+            overflow: hidden;
+            max-height: 330px;
+        }
+
+        #tableContainer {
+            overflow-y: auto;
+            max-height: 330px;
+        }
+
+        table {
+            overflow-y: auto;
+        }
+
+        .help {
+            background-color: #77dd77 !important;
+        }
+
+
+        .entry:hover {
+            background-color: #d6d6d6 !important;
+        }
+
+        .help:hover {
+            background-color: lightgreen !important;
+        }
+
+        #activity-view-container {
+            height: 250px;
+        }
+
+        .channels {
+            /* float:left; */
+            display: grid;
+        }
+
+        .channelsContainer {
+            display: inline-grid;
+        }
+
+        table thead tr{
+            display:block;
+        }
+
+        table th,table td{
+            width:100px;
+        }
+
+
+        table  tbody{
+            display:block;
+            height:200px;
+            overflow:auto;
+        }
+        .headerContainer {
+            display: grid;
+            grid-template-columns: 0px 1fr 1fr 1fr
+        }
+        .lifecycleFilterContainer {
+            display: inline-grid;
+        }
+        .lifecycleFilter{
+            display: grid;
+            grid-template-columns: auto  auto  auto  auto  auto  auto  auto  auto  auto  auto ;
+        }
+
+    </style>
+    <!-- EXAMPLE END -->
+    <script>
+
+        var emailIcon = '<svg viewbox="-2 -2 204 104" width="75px" height="50px"><rect x="0" y="0" width="150" height="100" style="fill:none;stroke:black;stroke-width:4;" /><line x1="0" y1="0" x2="75" y2="50" style="stroke:rgb(0,0,0);stroke-width:4" /><line x1="75" y1="50" x2="150" y2="0" style="stroke:rgb(0,0,0);stroke-width:4" /></svg>';
+        var webIcon = '<svg viewbox="-2 -2 104 104" width="50px" height="50px"><circle cx="50" cy="50" r="50" stroke="black" stroke-width="4" fill="none" /><path d="M 50 100 q -60 -50 0 -100" stroke="black" stroke-width="3" fill="none" /><path d="M 50 100 q 60 -50 0 -100" stroke="black" stroke-width="3" fill="none" /><line x1="0" y1="50" x2="100" y2="50" stroke="black" stroke-width="3"/><line x1="50" y1="0" x2="50" y2="100" stroke="black" stroke-width="3"/><path d="M 15 15 q 35 25 70 0" stroke="black" stroke-width="3" fill="none" /><path d="M 15 85 q 35 -25 70 0" stroke="black" stroke-width="3" fill="none" /></svg>';
+        var mobileIcon = '<svg viewbox="-2 -2 54 104" width="50px" height="50px"><rect x="0" y="0" rx="5" ry="5" width="60" height="100" style="fill:black;stroke:black;stroke-width:2;" /><rect x="15" y="0" rx="2" ry="2" width="30" height="5" style="fill:white;stroke:black;stroke-width:2;" /><rect x="5" y="5" rx="2" ry="2" width="50" height="80" style="fill:white;stroke:black;stroke-width:2;" /><circle cx="30" cy="92" r="5" stroke="black" stroke-width="2" fill="white" /></svg>';
+        window.channel = {
+            web:["Banking Web Site"],
+            mobile:["Customer First iOS app","Mobile iOS Banking"],
+            email:["Email"],
+            assisted:["CallCenter"],
+            physical:["Banking System","Branch","Localz Branch"],
+            social:["Facebook","Twitter"]
+        }
+        var filterCondition = "Clear";
+        var searchCondition = "";
+        var showChannel = {
+            web:true,
+            mobile:true,
+            email:true,
+            assisted:true,
+            physical:true,
+            social:true            
+        }
+        var hasChannels = {
+            web:false,
+            mobile:false,
+            email:false,
+            assisted:false,
+            physical:false,
+            social:false            
+        }
+        // Cached list of all rows (in html form)
+        var activityHistoryRows = [];
+        // Checks if we have finished loading and populating the list
+        var hasPopulated = false;
+        function processActivityHistory() {
+            // All activity types only
+            var lifecycleStages = document.querySelectorAll('tr > td:nth-child(4)');
+            // For each activity
+
+            lifecycleStages.forEach(function (row, x) {
+                var searchable = [];
+                row.parentNode.querySelectorAll("td").forEach(function (ele) {
+                    searchable.push(ele.innerText);
+                });
+                Object.keys(channel).forEach(function (ele) {
+                    channel[ele].forEach(function (touchpoint) {
+                        if (touchpoint === row.parentElement.childNodes[1].innerText) {
+                            searchable.push(ele);
+                        }
+                    });
+                });
+                
+                activityHistoryRows.push({
+                    type: row.innerText,
+                    row: row.parentElement,
+                    search: searchable,
+                    channel: searchable.slice(-1)[0]
+                });
+            });
+            hasPopulated = true;
+        }
+
+        function filterListByType(event) {
+            if (!!event) {
+                filterCondition = event.target.innerText.trim();
+            }            
+            applyFilters();
+        }
+
+        function filterByChannel(event) {
+            Object.keys(showChannel).forEach(function (ele) {
+                showChannel[ele] = false;
+            })
+            document.querySelectorAll("input[name='channel']:checked").forEach(function (ele) {
+                showChannel[ele.labels[0].innerHTML.trim().toLowerCase()] = true
+            });
+            applyFilters();
+        }
+
+        function applySearch(event) {
+            if (!!event) {
+                searchCondition = event.target.value;
+            }
+            applyFilters();
+        }
+        
+        function addFilterChannelButtons() {
+            activityHistoryRows.forEach(function (ele) {
+                hasChannels[ele.channel] = true;
+            });
+            document.querySelector("div.channels").innerHTML = "";
+
+            Object.keys(hasChannels).forEach(function (ele) {
+                if (hasChannels[ele]) {
+                    var propCaseChannel = (ele[0].toUpperCase() + ele.slice(1));
+                    document.querySelector("div.channels").innerHTML += '<div class="form-check form-check-inline"><input type="checkbox" name="channel" id="select'+propCaseChannel+'" checked="true" onchange="filterByChannel()" class="form-check-label"/><label for="select'+propCaseChannel+'" class="form-check-label">'+propCaseChannel+'</label></div>';
+                }
+            });
+        }
+
+        function applyFilters() {
+            var matches = activityHistoryRows.filter(function (ele) {
+                return (filterCondition === "Clear" || ele.type === filterCondition || (filterCondition === "Other" && ele.type === "")) && (ele.search.some(function (searchEle) {return RegExp(searchCondition,"i").test(searchEle)}) || searchCondition === "") && (showChannel[ele.channel.toLowerCase()]);
+            });
+
+            $("#activity-view-container").empty();
+            matches.forEach(function(ele) {
+                $("#activity-view-container").append(ele.row);
+            });
+        }
+    </script>
+
+    <!-- END: OPTIONAL add-ons for this view -->
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-body" style="height: 450px; overflow: hidden; overflow-y: auto;">
+
+                        <!--
+                            one-structure: Container for retrieving data from one or more structures.
+                            attributes:
+                                api-name: (required) A comma-separated string of structures.
+                            exposed data:
+                                Provided api names will be mapped to data objects, keyed by api-name, on the oneStructure object.
+                        -->
+                        <one-structure api-name="singleCustomerJourneyConfig">
+                            <div class="row headerContainer" style="text-align: center;" id="filterDivs">
+                                <div class="channelsContainer">
+                                    <div class="channels">
+                                    </div>
+                                </div>
+                                <div class="lifecycleFilterContainer">
+                                    <div class="lifecycleFilter">
+                                        <div class="filterCondition" ng-repeat="x in oneStructure.singleCustomerJourneyConfig.lifecycleStages.split(',')"
+                                            onClick="filterListByType(event)">
+                                            {{x}}
+                                        </div>
+                                        <div class="filterCondition" onClick="filterListByType(event)">
+                                            Other
+                                        </div>
+                                        <div class="filterCondition" onClick="filterListByType(event)">
+                                            Clear
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="search">
+                                    <input type="text" placeholder="search" onKeyUp="applySearch(event)" id="search" />
+                                </div>
+                            </div>
+                        </one-structure>
+                        <one-structure api-name="history">
+                            <div id="containerContainer">
+                                <div id="tableContainer">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Touchpoint</th>
+                                                <th></th>
+                                                <th>Interaction</th>                                                
+                                                <th>Time Ago</th>
+                                                <th>Status</th>
+                                                <th>Proposition</th>
+                                                <th>Activity Type</th>
+												<th>Lifecycle Stage</th>
+                                                <th>Action Name</th>
+                                                <th>Event Type</th>
+                                                <th>Occurrences</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="activity-view-container" ng-controller="AppCtrl">
+                                            <tr id="activity-view-item-{{$index}}" ng-repeat="entry in oneStructure.history.entries"
+                                                ng-cloak="true" class="entry" ng-init="$last && onTableFinish()">
+                                                <td ng-bind="entry.touchpoint"></td>
+                                                <td>
+                                                    <span ng-if='checkTouchpoint("email",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-email"></span>
+                                                    <span ng-if='checkTouchpoint("web",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-laptop"></span>
+                                                    <span ng-if='checkTouchpoint("mobile",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-mobile"></span>
+                                                    <span ng-if='checkTouchpoint("assisted",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-assisted"></span>
+                                                    <span ng-if='checkTouchpoint("physical",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-physical"></span>
+                                                    <span ng-if='checkTouchpoint("social",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-social"></span>
+                                                </td>
+                                                <td ng-bind="entry.interaction"></td>
+                                                <!-- @see EXAMPLE: Using Angular Plugins above -->
+                                                <td am-time-ago="entry.timestamp"></td>
+                                                <td ng-bind="entry.recognitionStatus"></td>
+                                                <td ng-bind="entry.proposition"></td>
+                                                <td ng-bind="entry.activityType"></td>
+												<td ng-bind="entry.lifecycleStage"></td>
+                                                <td ng-bind="entry.action"></td>
+                                                <td>
+                                                    <i class="glyphicon" ng-class="{
+                                                        VIEW: 'glyphicon-eye-open',
+                                                        POSITIVE_CLICK: 'glyphicon-thumbs-up',
+                                                        NEGATIVE_CLICK: 'glyphicon-thumbs-down',
+                                                        NEUTRAL_CLICK: 'glyphicon-pushpin',
+                                                    }[entry.actionResult]">
+                                                    </i> {{ {
+                                                    VIEW: 'View',
+                                                    POSITIVE_CLICK: 'Positive',
+                                                    NEGATIVE_CLICK: 'Negative',
+                                                    NEUTRAL_CLICK: 'Neutral',
+                                                    }[entry.actionResult] }}
+                                                </td>
+                                                <td ng-bind="entry.occurrences"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </one-structure>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:page>

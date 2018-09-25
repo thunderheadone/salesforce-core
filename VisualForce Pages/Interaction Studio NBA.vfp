@@ -1,0 +1,83 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="false" standardController="Contact">
+
+    <thunderhead:one_sdk customerKeyName="sfdccontactkey" customerKey="{!Contact.email}"/>
+
+   <!-- START: OPTIONAL add-ons for this view -->
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"></link>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css"></link>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
+
+    <!-- EXAMPLE: Using Angular plugins -->
+    <!-- @see http://ngmodules.org/ -->
+    <!-- @see https://github.com/urish/angular-moment -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.min.js"></script>
+    <script>
+        // Push custom dependency to the application for use in the template.
+        // @see am-time-ago below
+        angular.module('ONE-CRM').requires.push('angularMoment');
+    </script>
+
+    <style>
+    body {font-size: 10px;}
+    </style>
+    <!-- EXAMPLE END -->
+
+<!-- END: OPTIONAL add-ons for this view -->
+    <div class="container-fluid">
+
+        <!--
+            one-notification-shade: Container for global message display.
+            Can be placed anywhere in the markup.
+        -->
+        <one-notification-shade></one-notification-shade>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+
+                    <!-- <div class="panel-body" style="height: 450px; overflow: hidden; overflow-y: auto;"> -->
+                    <div class="panel-body">
+
+                        <!--
+                            one-interaction: Container for retrieving optimizations for a given interaction.
+                            attributes:
+                                path: (required) The path to the interaction.
+                            exposed data:
+                                oneInteraction.optimizations
+                        -->
+                        <one-interaction path="/nbc">
+                            <div ng-repeat="optimization in oneInteraction.optimizations" class="row" ng-cloak="true">
+                                <div ng-repeat="action in optimization.data.actions" class="col-xs-4 text-center" style="padding-bottom:15px;">
+                                    <div ng-bind-html="action.asset.content"></div>
+
+                                    <button type="button"
+                                        class="btn btn-sm"
+                                        ng-class="{ true: 'btn-primary', false: 'btn-link' }[response.sentiment === 'positive']"
+                                        ng-repeat="response in action.asset.responses | orderBy: '-sentiment'"
+                                        ng-bind="(response.label || response.sentiment) | uppercase"
+                                        ng-click="action.sent = true"
+                                        ng-disabled="action.sent"
+                                        one-interaction-response="response">
+                                        <!--
+                                            one-interaction-response: onClick event binder for sending interaction responses to ONE.
+                                            Requires a response object to be passed to it.
+                                        -->
+                                    </button>
+                                </div>
+                            </div>
+                        </one-interaction>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</apex:page>
