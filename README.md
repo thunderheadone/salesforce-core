@@ -143,5 +143,5 @@ The Interaction Studio Journey widget shows...
 
 
 
-[installation]:readmeImages/installation.PNG
-[customerHistory]:readmeImages/CustomerHistory.PNG
+[installation]:images/installation.PNG
+[customerHistory]:images/CustomerHistory.PNG
