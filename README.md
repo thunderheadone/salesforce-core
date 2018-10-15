@@ -10,7 +10,7 @@ SalesForce Core - Visual Force Pages
 
 ## Create Visualforce Pages
 
-After isntalling the IS SDK for CRM, create a Visualfroce page for each widget.
+After installing the IS SDK for CRM, create a Visualfroce page for each widget.
 
 1. Navigate to `Setup > Visualforce Pages`.
 2. Click `New`.
