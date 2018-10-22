@@ -162,6 +162,6 @@ The Interaction Studio Journey widget shows...
 
 [installation]:images/installation.PNG
 [customerHistory]:images/CustomerHistory.PNG
-[customerHistoryDA]:images/CustomerHistoryDA.PNG
-[createCustomerHistoryDA]:images/CreateCustomerHistoryDA.PNG
-[customerJourneyStatusDA]:images/CustomerJourneyStatusDA.PNG
+[customerHistoryDA]:images/CustomerHistoryDA.png
+[createCustomerHistoryDA]:images/CreateCustomerHistoryDA.png
+[customerJourneyStatusDA]:images/CustomerJourneyStatusDA.png
