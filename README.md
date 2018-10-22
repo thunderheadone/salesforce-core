@@ -29,6 +29,17 @@ After installing the IS SDK for CRM, create a Visualfroce page for each widget.
 
 ## Create Data Adapters
 
+### Customer History
+Navigate to the External Data tab under Collect in the main navigation bar. Select the Customer History Data Adapter and provide it with a name.
+![customerHistoryDA][customerHistoryDA]
+Next, click "Test Configuration" and after success has appeared click apply, then save. 
+![createCustomerHistoryDa][createCustomerHistoryDA]
+
+### customer Journey Status
+Navigate to the External Data tab under Collect in the main navigation bar. Select the Customer Journey Status Data Adapter and provide it with a name.
+![customerJourneyStatusDA][customerJourneyStatusDA]
+Next, click save.
+
 ## Create Pull Data Structures
 
 ### History Structure
@@ -141,7 +152,16 @@ The Interaction Studio Journey widget shows...
 
 ### How to Use
 
+## Customer Interest Score
+
+### Setup
+
+### How to Use
+
 
 
 [installation]:images/installation.PNG
 [customerHistory]:images/CustomerHistory.PNG
+[customerHistoryDA]:images/CustomerHistoryDA.PNG
+[createCustomerHistoryDA]:images/CreateCustomerHistoryDA.PNG
+[customerJourneyStatusDA]:images/CustomerJourneyStatusDA.PNG
