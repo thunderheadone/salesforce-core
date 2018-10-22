@@ -1,6 +1,6 @@
 <apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="false" standardController="Contact">
 
-    <thunderhead:one_sdk customerKeyName="sfdccontactkey" customerKey="{!Contact.email}" />
+    <thunderhead:one_sdk customerKeyName="customerkey" customerKey="{!Contact.email}" />
 
     <!-- START: OPTIONAL add-ons for this view -->
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -262,14 +262,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body" style="height: 450px; overflow: hidden; overflow-y: auto;">
 
-                        <!--
-                            one-structure: Container for retrieving data from one or more structures.
-                            attributes:
-                                api-name: (required) A comma-separated string of structures.
-                            exposed data:
-                                Provided api names will be mapped to data objects, keyed by api-name, on the oneStructure object.
-                        -->
-                        <one-structure api-name="singleCustomerJourneyConfig">
+                        <one-structure api-name="internal-customer-journey">
                             <div class="row headerContainer" style="text-align: center;" id="filterDivs">
                                 <div class="channelsContainer">
                                     <div class="channels">
@@ -277,9 +270,9 @@
                                 </div>
                                 <div class="lifecycleFilterContainer">
                                     <div class="lifecycleFilter">
-                                        <div class="filterCondition" ng-repeat="x in oneStructure.singleCustomerJourneyConfig.lifecycleStages.split(',')"
+                                        <div class="filterCondition" ng-repeat="x in oneStructure['internal-customer-journey'].stages" 
                                             onClick="filterListByType(event)">
-                                            {{x}}
+                                            {{x.name}}
                                         </div>
                                         <div class="filterCondition" onClick="filterListByType(event)">
                                             Other

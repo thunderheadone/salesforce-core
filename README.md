@@ -106,7 +106,7 @@ The Interaction Studio Customer History widget allows you to see and filter the 
 
 ### Setup
 
-This widget uses the Customer History Data Adapter in IS, and requires you to set up the history Structure, and the SCJ Configuration Structure.
+This widget uses the Customer History Data Adapter in IS, and requires you to set up the history Structure.
 
 You are also required to provide an object mapping touchpoints to channels.
 
