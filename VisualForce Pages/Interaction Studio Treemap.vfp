@@ -1,0 +1,103 @@
+<apex:page showHeader='false' sidebar='false' standardStylesheets='false' applyHtmlTag='false' standardController='Contact'>
+
+    <thunderhead:one_sdk customerKeyName='customerkey' customerKey='{!Contact.email}' />
+
+    <!-- START: OPTIONAL add-ons for this view -->
+    <script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    </link>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css'>
+    </link>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.min.js'></script>
+    <script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>
+    
+    <script>
+        // Push custom dependency to the application for use in the template.
+        // @see am-time-ago below
+        angular.module('ONE-CRM').requires.push('angularMoment');
+        angular.module('ONE-CRM').requires.push('myApp');
+        angular.module('myApp', [])
+            .controller('AppCtrl', function ($scope) {
+                function showStaticTooltip(row, size, value) {
+                    return '<div style="background:#fd9; padding:10px; border-style:solid">' +
+                    'Total diminished Proposition Count: '+size+'</div>';
+                }
+                $scope.makeTreemap = function () {
+                    setNotification(null);
+                    try {
+                        console.log($scope);
+                        $scope.structure = $scope["$parent"].oneStructure;
+                        $scope.structure.propositions = $scope.structure.history.propositions;
+                        var treeMapArray = [];
+                        treeMapArray.push(['Proposition', 'Parent', 'interest']);
+
+                        $scope.structure.propositions.forEach(ele => {
+                            var levels = ele.prop_name.split('/');
+                            treeMapArray.push([levels[levels.length - 1],
+                                levels[levels.length - 2], ele.interest
+                            ]);
+                        })
+
+                        console.log(JSON.stringify(treeMapArray));
+                        google.charts.load('current', {'packages':['treemap']});
+                        google.charts.setOnLoadCallback(drawChart);
+                        function drawChart() {
+                            var data = google.visualization.arrayToDataTable(treeMapArray);
+                            console.log(data)
+                            var tree = new google.visualization.TreeMap(document.getElementById('chart_div'));
+                            tree.draw(data, {
+                                minColor: '#24a1e0',
+                                midColor: '#24a1e0',
+                                maxColor: '#24a1e0',
+                                headerHeight: 15,
+                                fontColor: 'white',
+                                height: 450,
+                                showScale: false,
+                                useWeightedAverageForAggregation: true,
+                                generateTooltip: showStaticTooltip                                
+                            });
+                        }
+                    } catch (e) {
+                        setNotification(e);
+                    }
+                }
+
+                function setNotification(severity, summary, detail) {
+                        $scope.notification = (!severity) ? null : {
+                            severity: severity,
+                            summary: summary,
+                            detail: detail
+                        };
+                    }
+            
+            });
+    </script>
+
+    <div class='container-fluid'>
+        <div class='row'>
+            <div class='col-md-12'>
+                <div class='panel panel-default'>
+                    <div class='panel-body' style='height: 450px; overflow: hidden; overflow-y: auto;'>
+                        <one-structure api-name="history">
+                            <div class='container-fluid'>
+                                <div class='row'>
+                                    <notification-shade></notification-shade>
+                                </div>
+                                <div class='row' ng-hide='notification'>
+                                    <div class='row' style='text-align: center;' ng-controller='AppCtrl'>
+                                    <div ng-if="oneStructure.history">
+                                        <div id="chart_div" ng-init="makeTreemap(oneStructure.history)"></div>   
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </one-structure>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:page>
