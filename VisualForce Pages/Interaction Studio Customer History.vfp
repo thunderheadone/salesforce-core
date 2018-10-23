@@ -189,7 +189,13 @@
         var hasPopulated = false;
         function processActivityHistory() {
             // All activity types only
-            var lifecycleStages = document.querySelectorAll('tr > td:nth-child(4)');
+            var headers = document.querySelectorAll("thead>tr>th");
+            var lifecycleStages;
+            for (var i = 0; i < headers.length; i++) {
+                if (headers[i].innerText === "Lifecycle Stage") {
+                    lifecycleStages = document.querySelectorAll('tr > td:nth-child('+(i+1)+')');
+                }
+            }
             // For each activity
             lifecycleStages.forEach(function (row, x) {
                 var searchable = [];
