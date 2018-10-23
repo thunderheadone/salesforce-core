@@ -48,22 +48,28 @@
         .filterCondition {
             cursor: pointer;
             border-radius: 4px;
-            display: inline;
-            padding: 10px;
+            display: inline-grid;
+            padding: 1em;
             margin: 4px;
             background-color: #24a1e0;
             color: white;
+            height: 3em;
+        }
+
+        .filterCondition>span {
+            font-size: 1em;
         }
 
         .search {
             display: inline-grid;
-            padding: 10px;
-            margin: 4px;
+            display: -ms-inline-grid;
+            -ms-grid-column: 6;
+            margin-top: auto;
+            margin-bottom: auto;
         }
 
         #search {
-            height: 31px;
-            float:right;
+            height: 35px;
         }
 
         #filterDivs {
@@ -90,7 +96,10 @@
         .help {
             background-color: #77dd77 !important;
         }
-
+        
+        .entry {
+            height: 45px;
+        }
 
         .entry:hover {
             background-color: #d6d6d6 !important;
@@ -107,36 +116,38 @@
         .channels {
             /* float:left; */
             display: grid;
+            display: -ms-grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            -ms-grid-columns:  1fr 1fr 1fr;
+            -ms-grid-rows: auto auto;
         }
 
         .channelsContainer {
             display: inline-grid;
+            display: -ms-inline-grid;
+            -ms-grid-column: 2;
         }
 
-        table thead tr{
-            display:block;
-        }
-
-        table th,table td{
-            width:100px;
-        }
-
-
-        table  tbody{
-            display:block;
-            height:200px;
-            overflow:auto;
-        }
         .headerContainer {
             display: grid;
-            grid-template-columns: 0px 1fr 1fr 1fr
+            display: -ms-grid;
+            grid-template-columns: 0fr 1fr 5fr 1fr;
+            -ms-grid-columns: 0fr 1fr 5fr 1fr;
+            -ms-grid-rows: 1fr;
         }
         .lifecycleFilterContainer {
             display: inline-grid;
+            display: -ms-inline-grid;
+            -ms-grid-column: 3;
         }
         .lifecycleFilter{
-            display: grid;
-            grid-template-columns: auto  auto  auto  auto  auto  auto  auto  auto  auto  auto ;
+            margin-top: auto;
+            margin-bottom: auto;
+            display: -ms-inline-flexbox;
+        }
+
+        .form-check.form-check-inline {
+            text-align: left;
         }
 
     </style>
@@ -159,7 +170,7 @@
         var showChannel = {
             web:true,
             mobile:true,
-            email:true,
+            outbound:true,
             assisted:true,
             physical:true,
             social:true            
@@ -167,7 +178,7 @@
         var hasChannels = {
             web:false,
             mobile:false,
-            email:false,
+            outbound:false,
             assisted:false,
             physical:false,
             social:false            
@@ -180,7 +191,6 @@
             // All activity types only
             var lifecycleStages = document.querySelectorAll('tr > td:nth-child(4)');
             // For each activity
-
             lifecycleStages.forEach(function (row, x) {
                 var searchable = [];
                 row.parentNode.querySelectorAll("td").forEach(function (ele) {
@@ -193,7 +203,6 @@
                         }
                     });
                 });
-                
                 activityHistoryRows.push({
                     type: row.innerText,
                     row: row.parentElement,
@@ -220,14 +229,12 @@
             });
             applyFilters();
         }
-
         function applySearch(event) {
             if (!!event) {
                 searchCondition = event.target.value;
             }
             applyFilters();
         }
-        
         function addFilterChannelButtons() {
             activityHistoryRows.forEach(function (ele) {
                 hasChannels[ele.channel] = true;
@@ -236,12 +243,11 @@
 
             Object.keys(hasChannels).forEach(function (ele) {
                 if (hasChannels[ele]) {
-                    var propCaseChannel = (ele[0].toUpperCase() + ele.slice(1));
+                    var propCaseChannel = (ele[0] + ele.slice(1));
                     document.querySelector("div.channels").innerHTML += '<div class="form-check form-check-inline"><input type="checkbox" name="channel" id="select'+propCaseChannel+'" checked="true" onchange="filterByChannel()" class="form-check-label"/><label for="select'+propCaseChannel+'" class="form-check-label">'+propCaseChannel+'</label></div>';
                 }
             });
         }
-
         function applyFilters() {
             var matches = activityHistoryRows.filter(function (ele) {
                 return (filterCondition === "Clear" || ele.type === filterCondition || (filterCondition === "Other" && ele.type === "")) && (ele.search.some(function (searchEle) {return RegExp(searchCondition,"i").test(searchEle)}) || searchCondition === "") && (showChannel[ele.channel.toLowerCase()]);
@@ -253,15 +259,12 @@
             });
         }
     </script>
-
     <!-- END: OPTIONAL add-ons for this view -->
     <div class="container-fluid">
-
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-body" style="height: 450px; overflow: hidden; overflow-y: auto;">
-
                         <one-structure api-name="internal-customer-journey">
                             <div class="row headerContainer" style="text-align: center;" id="filterDivs">
                                 <div class="channelsContainer">
@@ -311,7 +314,7 @@
                                                 ng-cloak="true" class="entry" ng-init="$last && onTableFinish()">
                                                 <td ng-bind="entry.touchpoint"></td>
                                                 <td>
-                                                    <span ng-if='checkTouchpoint("email",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-email"></span>
+                                                    <span ng-if='checkTouchpoint("outbound",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-email"></span>
                                                     <span ng-if='checkTouchpoint("web",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-laptop"></span>
                                                     <span ng-if='checkTouchpoint("mobile",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-mobile"></span>
                                                     <span ng-if='checkTouchpoint("assisted",entry.touchpoint)' class="one-glyphicon-lg one-glyphicon-assisted"></span>
