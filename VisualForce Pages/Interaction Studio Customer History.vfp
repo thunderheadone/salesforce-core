@@ -271,7 +271,7 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-body" style="height: 450px; overflow: hidden; overflow-y: auto;">
-                        <one-structure api-name="internal-customer-journey">
+                        <!--<one-structure api-name="internal-customer-journey">
                             <div class="row headerContainer" style="text-align: center;" id="filterDivs">
                                 <div class="channelsContainer">
                                     <div class="channels">
@@ -295,7 +295,7 @@
                                     <input type="text" placeholder="search" onKeyUp="applySearch(event)" id="search" />
                                 </div>
                             </div>
-                        </one-structure>
+                        </one-structure>-->
                         <one-structure api-name="history">
                             <div id="containerContainer">
                                 <div id="tableContainer">
