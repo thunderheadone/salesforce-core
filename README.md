@@ -1,5 +1,5 @@
 
-The VisualForce code contained herein are examples to be used for demonstration purposes and as a baseline for futher development. 
+The VisualForce code contained herein are examples to be used for demonstration purposes and as a baseline for further development. 
 
 See the online help: https://na5.thunderhead.com/one/help/interaction-studio/how-do-i/salesforce/how_do_i_salesforce/
 
@@ -16,8 +16,8 @@ After installing the IS SDK for CRM, create a Visualfroce page for each widget.
 2. Click `New`.
 3. Provide a `Label` and *Name for each new page.
     Typically, these will be:
-    * Interaction Sudio NBA
-    * Interaction Studio Custoemr History
+    * Interaction Studio NBA
+    * Interaction Studio Customer History
     * Interaction Studio Journey
 4. Use sample code provided by us for the Visualforce mark-up. Ensure that your mark-up:
     1. Has the "standardController" parameter set-up as per the object that will contain the widget. For example, Contact.
@@ -54,11 +54,11 @@ Next, click save.
 |    |    |session             |Session Id|
 |    |    |viewOrClick         |View or click|
 |    |    |interaction         |Interaction name|
-|    |    |recognisionStatus   |Recognition Status|
+|    |    |recognitionStatus   |Recognition Status|
 |    |    |proposition         |Proposition name|
 |    |    |activityType        |Activity Type|
 |    |    |completion          |Completion Activity|
-|    |    |occurences          |Event count|
+|    |    |occurrences         |Event count|
 |    |    |lifecycleStage      |Lifecycle Stage|
 |    |propositions|    |propositions       |
 |    |    |prop_name           |Proposition name|
@@ -128,7 +128,7 @@ The widget allows you to filter by:
 * Lifecycle Stage - Buttons above the middle of the table will show the Lifecycle Stages specified in the SCJ Configuration Structure along with:
     * other - Those Activity Types that aren't associated with a Lifecycle Stage
     * clear - Remove any filtering and show all Interactions
-* Search Term - This allows you to search by any column in the table, displaying an entry if it contains the serach term in 1 of its columns
+* Search Term - This allows you to search by any column in the table, displaying an entry if it contains the search term in 1 of its columns
 
 ![Customer History][customerHistory]
 
