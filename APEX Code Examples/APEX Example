@@ -1,0 +1,66 @@
+/**
+ * Trigger that gets run when the lead has been updated.
+ * This example is called after a lead update, but there are many other trigger types that can be used.
+ * Check https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_triggers.htm for more information.
+ */
+trigger FunctionName on Lead (after update) {
+    for (Lead lead : Trigger.new) {
+        // Fetch the previous lead data (if needed for the condition),
+        Lead oldLead = Trigger.oldMap.get(lead.Id);
+
+        // Check the new lead data (and the old lead data)
+        if (lead.Test_Drive_Scheduled__c != null && lead.Test_Drive_Scheduled__c && !oldLead.Test_Drive_Scheduled__c) {
+            // Push an event to ONE/IS (NOTE: the interaction & touchpoint must be published first!).
+            // This example pushes an interaction to the URL with the data "Lead Email" which is stored in ONE/IS under the "emailkey" attribute.
+            ISEvent.postEvent('assist://salescloud/testdrive/book', lead.Email, 'emailkey');
+        }
+    }
+}
+
+/**
+ * Class to handle sending events to ONE/IS
+ */
+public class ISEvent {
+
+    /** 
+     * Sends Interactions to ONE/IS. 
+     * String eventURI: The URL/URI to the Interaction. Example: "api://salesforce/name/of/interaction".
+     * String customerKey: The customer's identifier that the interaction relates to. Example: "my@email.address", "ID000001", etc.
+     * String customerKeyName: The key to relate the identifier to. There can be many in ONE/IS. Example: "customerKey".
+     * - The key names come from the attribute in ONE/IS being a "key attribute", you can find it next to the attribute under "API Name".
+     * - The default key, created by default in all instances is "customerKey".
+     */
+    @future (callout = true)
+    public static void postEvent(String eventURI, String customerKey, String customerKeyName) {
+        // Setup HTTP request.
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+
+        // Enter your server URL here, it might not be "na5".
+        // In ONE, this can be found in the address bar. 
+        // In IS, this can be found by right-clicking IS and clicking "view source". The server name will then show in the address bar.
+        // Replace {YOUR_SERVER_HERE} with what your instance has. (eu2, na5, ap1)
+        // Replace {YOUR_SITEKEY_HERE} with the Site Key that you can find under "Configure" -> "ONE / Interaction Studio Tag". (ONE-XXXXXXXX-XXX)
+        request.setEndpoint('https://{YOUR_SERVER_HERE}.thunderhead.com/one/rt/track/{YOUR_SITEKEY_HERE}/events');
+
+        // Add required headers and set method
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json');
+
+        // Create the JSON payload for the interaction, including the key and key api name.
+        request.setBody('{"uri":"' + eventURI + '", "customerKey":"' + customerKey + '", "customerKeyName": "' + customerKeyName + '"}');
+
+        // Send the request to ONE/IS
+        HttpResponse response = http.send(request);
+
+        // Parse the JSON response
+        if (response.getStatusCode() == 201) {
+            // If the request was successful, this will log some information into the debug console.
+            System.debug(response.getBody());
+        } else {
+            // If something went wrong, some information on what exactly went wrong is logged.
+            System.debug('Unable to send interaction. Code: ' + response.getStatusCode() + ', Status: ' + response.getStatus());
+        }
+        return;
+    }
+}
