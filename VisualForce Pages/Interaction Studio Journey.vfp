@@ -1,6 +1,6 @@
 <apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="false" standardController="Contact">
 
-    <thunderhead:one_sdk customerKeyName="sfdccontactkey" customerKey="{!Contact.email}"/>
+    <thunderhead:one_sdk customerKeyName="customerkey" customerKey="{!Contact.email}"/>
 
    <!-- START: OPTIONAL add-ons for this view -->
     <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
